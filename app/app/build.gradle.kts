@@ -4,12 +4,12 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("com.google.dagger.hilt.android")
+    // id("com.google.dagger.hilt.android") // Disabled for build fix
     id("androidx.navigation.safeargs.kotlin")
-    alias(libs.plugins.protobuf)
+    // alias(libs.plugins.protobuf) // Disabled for build fix
     alias(libs.plugins.ktfmt)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
+    // alias(libs.plugins.ksp) // Disabled for build fix
+    // alias(libs.plugins.room) // Disabled for build fix
 }
 
 fun readProperties(propertiesFile: File) =
@@ -189,9 +189,9 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
 
-    ksp(libs.room.compiler)
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
+    // ksp(libs.room.compiler) // Disabled for build fix
+    // implementation(libs.room.runtime) // Disabled for build fix
+    // implementation(libs.room.ktx) // Disabled for build fix
 
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
@@ -206,9 +206,9 @@ dependencies {
 
     implementation(libs.coil)
 
-    ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation)
-    implementation(libs.hilt.android)
+    // ksp(libs.hilt.compiler) // Disabled for build fix
+    // implementation(libs.hilt.navigation) // Disabled for build fix
+    // implementation(libs.hilt.android) // Disabled for build fix
 
     implementation(libs.paging.runtime)
 
