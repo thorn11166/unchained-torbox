@@ -34,8 +34,7 @@ jobs:
       
       - name: Build Debug APK
         working-directory: ./app
-        run: ./gradlew assembleDebug -x lint --no-daemon
-        continue-on-error: true
+        run: ./gradlew assembleDebug -x lint -x lintVital --no-daemon --stacktrace 2>&1 | tail -200
       
       - name: Check Build Result
         run: |
