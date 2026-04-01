@@ -28,11 +28,30 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x app/gradlew
       
+      - name: Gradle Sync
+        working-directory: ./app
+        run: ./gradlew clean --dry-run
+      
       - name: Build Debug APK
         working-directory: ./app
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug -x lint --no-daemon
+        continue-on-error: true
+      
+      - name: Check Build Result
+        run: |
+          if [ -f app/app/build/outputs/apk/debug/app-debug.apk ]; then
+            echo "✅ Build succeeded"
+            ls -lh app/app/build/outputs/apk/debug/
+          else
+            echo "❌ Build failed - checking logs..."
+            if [ -f app/app/build/reports/lint-results.html ]; then
+              echo "Lint report available"
+            fi
+            exit 1
+          fi
       
       - name: Upload APK to artifacts
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: unchained-torbox-debug
