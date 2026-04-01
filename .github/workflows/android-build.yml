@@ -36,8 +36,9 @@ jobs:
         id: build
         working-directory: ./app
         run: |
-          ./gradlew assembleDebug -x lint -x test --no-daemon --stacktrace 2>&1 | tee build.log
+          ./gradlew assembleDebug -x lint -x test --no-daemon --stacktrace --info 2>&1 | tee build.log
           echo "Exit code: $?"
+        continue-on-error: true
       
       - name: Check Build Result
         run: |
