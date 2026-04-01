@@ -66,15 +66,24 @@ jobs:
       - name: Verify APK
         run: |
           echo "=== Checking for APK files ==="
-          if find . -name "*.apk" -type f 2>/dev/null | tee apk_files.txt; then
-            echo "✅ APK files found!"
-            cat apk_files.txt
-          else
-            echo "❌ No APK files found"
-            echo "=== Build output structure ==="
-            find app -type d -name "build" 2>/dev/null | head -10
-            find app -path "*/outputs/*" -type f 2>/dev/null | head -20
+          APK_FOUND=$(find . -name "*.apk" -type f 2>/dev/null | head -1)
+          if [ -z "$APK_FOUND" ]; then
+            echo "❌ NO APK FOUND!"
+            echo ""
+            echo "=== Debug: Full directory structure ==="
+            find app -type f -name "*.apk" 2>/dev/null || echo "No APKs in app/"
+            echo ""
+            echo "=== Debug: build directory structure ==="
+            find app -type d -name "build" 2>/dev/null
+            find app -path "*/build/outputs*" -type d 2>/dev/null
+            find app -path "*/build/outputs*" -type f 2>/dev/null | head -20
+            echo ""
+            echo "=== Debug: Last 50 lines of build log ==="
+            tail -50 app/build-output.log
             exit 1
+          else
+            echo "✅ APK FOUND: $APK_FOUND"
+            ls -lh "$APK_FOUND"
           fi
       
       - name: Upload APK to artifacts
