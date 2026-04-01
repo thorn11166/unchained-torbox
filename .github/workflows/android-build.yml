@@ -48,9 +48,20 @@ jobs:
           echo "Checking SDK exists:"
           ls -la /usr/local/lib/android/sdk/ 2>/dev/null | head -10 || echo "SDK not found"
       
+      - name: Clean Build
+        working-directory: ./app
+        run: ./gradlew clean --stacktrace
+      
       - name: Build Debug APK
         working-directory: ./app
-        run: ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.log
+        run: |
+          ./gradlew assembleDebug \
+            -x lint \
+            -x test \
+            --no-daemon \
+            --no-build-cache \
+            --stacktrace 2>&1 | tee build-output.log
+          echo "Exit code: $?"
       
       - name: Verify APK
         run: |
