@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base
+package com.thorn11166.unchainedtorbox.base
 
 import android.view.View
 import androidx.test.espresso.PerformException

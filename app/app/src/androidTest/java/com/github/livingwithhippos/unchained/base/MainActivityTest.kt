@@ -9,9 +9,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.base.MainActivity
-import com.github.livingwithhippos.unchained.base.waitForView
+import com.thorn11166.unchainedtorbox.R
+import com.thorn11166.unchainedtorbox.base.MainActivity
+import com.thorn11166.unchainedtorbox.base.waitForView
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

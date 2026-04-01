@@ -36,11 +36,11 @@ ktfmt {
 }
 
 android {
-    namespace = "com.github.livingwithhippos.unchained"
+    namespace = "com.thorn11166.unchainedtorbox"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.github.livingwithhippos.unchained"
+        applicationId = "com.thorn11166.unchainedtorbox"
         minSdk = 27
         targetSdk = 36
         versionCode = 56

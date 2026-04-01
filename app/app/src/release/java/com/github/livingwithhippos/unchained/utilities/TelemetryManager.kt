@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.utilities
+package com.thorn11166.unchainedtorbox.utilities
 
 import android.app.Activity
 import android.app.Application

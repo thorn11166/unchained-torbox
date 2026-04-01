@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained
+package com.thorn11166.unchainedtorbox
 
 import junit.framework.TestCase.assertEquals
 import org.junit.Test

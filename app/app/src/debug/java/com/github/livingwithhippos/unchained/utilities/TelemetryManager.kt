@@ -1,8 +1,8 @@
-package com.github.livingwithhippos.unchained.utilities
+package com.thorn11166.unchainedtorbox.utilities
 
 import android.app.Activity
 import android.app.Application
-import com.github.livingwithhippos.unchained.BuildConfig
+import com.thorn11166.unchainedtorbox.BuildConfig
 import ly.count.android.sdk.Countly
 import ly.count.android.sdk.CountlyConfig
 import timber.log.Timber

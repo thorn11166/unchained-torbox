@@ -1,9 +1,9 @@
-package com.github.livingwithhippos.unchained
+package com.thorn11166.unchainedtorbox
 
-import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
-import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
-import com.github.livingwithhippos.unchained.utilities.Node
+import com.thorn11166.unchainedtorbox.data.model.TorrentItem
+import com.thorn11166.unchainedtorbox.torrentdetails.model.TorrentFileItem
+import com.thorn11166.unchainedtorbox.torrentdetails.model.getFilesNodes
+import com.thorn11166.unchainedtorbox.utilities.Node
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import org.junit.Test

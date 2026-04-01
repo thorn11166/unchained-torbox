@@ -1,0 +1,78 @@
+package com.thorn11166.unchainedtorbox.base
+
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.SharedPreferences
+import com.thorn11166.unchainedtorbox.R
+import com.thorn11166.unchainedtorbox.data.local.ProtoStore
+import com.thorn11166.unchainedtorbox.data.local.RepositoryDataDao
+import com.thorn11166.unchainedtorbox.data.model.Repository
+import com.thorn11166.unchainedtorbox.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
+import com.thorn11166.unchainedtorbox.utilities.TelemetryManager
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+
+/**
+ * Entry point for the Dagger-Hilt injection. Deletes incomplete credentials from the datastore on
+ * start
+ */
+@HiltAndroidApp
+class UnchainedApplication : Application() {
+
+    @Inject lateinit var preferences: SharedPreferences
+
+    @Inject lateinit var activityCallback: ThemingCallback
+
+    @Inject lateinit var protoStore: ProtoStore
+
+    @Inject lateinit var pluginRepositoryDataDao: RepositoryDataDao
+
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.Default + job)
+
+    override fun onCreate() {
+        super.onCreate()
+
+        registerActivityLifecycleCallbacks(activityCallback)
+
+        scope.launch {
+            protoStore.deleteIncompleteCredentials()
+            if (pluginRepositoryDataDao.getDefaultRepository().isEmpty())
+                pluginRepositoryDataDao.insert(Repository(DEFAULT_PLUGINS_REPOSITORY_LINK))
+        }
+
+        createNotificationChannels()
+
+        TelemetryManager.onCreate(this)
+    }
+
+    private fun createNotificationChannels() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        val name = getString(R.string.app_name)
+        val torrentChannel =
+            NotificationChannel(TORRENT_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
+                .apply { description = getString(R.string.torrent_channel_description) }
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Register the channels with the system
+        notificationManager.createNotificationChannel(torrentChannel)
+
+        val downloadChannel =
+            NotificationChannel(DOWNLOAD_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
+                .apply { description = getString(R.string.download_channel_description) }
+        notificationManager.createNotificationChannel(downloadChannel)
+    }
+
+    companion object {
+        const val TORRENT_CHANNEL_ID = "unchained_torrent_channel"
+        const val DOWNLOAD_CHANNEL_ID = "unchained_download_channel"
+    }
+}
