@@ -45,10 +45,16 @@ jobs:
       - name: Verify APK
         run: |
           echo "=== Checking for APK files ==="
-          find . -name "*.apk" -type f 2>/dev/null
-          echo ""
-          echo "=== Checking app/build output structure ==="
-          find app -path "*/build/outputs/apk/*" -type f 2>/dev/null | head -20 || echo "No build outputs found"
+          if find . -name "*.apk" -type f 2>/dev/null | tee apk_files.txt; then
+            echo "✅ APK files found!"
+            cat apk_files.txt
+          else
+            echo "❌ No APK files found"
+            echo "=== Build output structure ==="
+            find app -type d -name "build" 2>/dev/null | head -10
+            find app -path "*/outputs/*" -type f 2>/dev/null | head -20
+            exit 1
+          fi
       
       - name: Upload APK to artifacts
         if: always()
