@@ -30,7 +30,7 @@ jobs:
       
       - name: Gradle Sync
         working-directory: ./app
-        run: ./gradlew clean --dry-run
+        run: echo "Skipping dry-run for now"
       
       - name: Build Debug APK
         id: build
