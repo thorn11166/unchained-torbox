@@ -9,6 +9,8 @@ import com.thorn11166.unchainedtorbox.data.model.PluginVersion
 import com.thorn11166.unchainedtorbox.data.model.Repository
 import com.thorn11166.unchainedtorbox.data.model.RepositoryInfo
 import com.thorn11166.unchainedtorbox.data.model.RepositoryPlugin
+import com.thorn11166.unchainedtorbox.data.local.RemoteDevice
+import com.thorn11166.unchainedtorbox.data.local.RemoteService
 
 /** Annotates class to be a Room Database with a table (entity) of the Credentials class */
 @Database(
