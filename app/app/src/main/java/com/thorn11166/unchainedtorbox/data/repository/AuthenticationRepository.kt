@@ -87,7 +87,7 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
         getToken(clientId, clientSecret, refreshToken)
 
     suspend fun refreshTokenWithError(
-        credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential
+        credentials: com.thorn11166.unchainedtorbox.data.local.Credentials.CurrentCredential
     ): EitherResult<UnchainedNetworkException, Token> =
         getTokenOrError(
             credentials.clientId!!,
