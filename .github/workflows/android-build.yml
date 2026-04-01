@@ -42,11 +42,21 @@ jobs:
         working-directory: ./app
         run: ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.log
       
+      - name: Verify APK
+        run: |
+          echo "=== Checking for APK files ==="
+          find . -name "*.apk" -type f 2>/dev/null
+          echo ""
+          echo "=== Checking app/build output structure ==="
+          find app -path "*/build/outputs/apk/*" -type f 2>/dev/null | head -20 || echo "No build outputs found"
+      
       - name: Upload APK to artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: unchained-torbox-debug
           path: app/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: warn
       
       - name: Upload build log
         if: always()
