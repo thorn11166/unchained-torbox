@@ -38,6 +38,16 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x app/gradlew
       
+      - name: Debug Env Before Build
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          echo "sdk.dir in local.properties:"
+          cat app/local.properties
+          echo ""
+          echo "Checking SDK exists:"
+          ls -la /usr/local/lib/android/sdk/ 2>/dev/null | head -10 || echo "SDK not found"
+      
       - name: Build Debug APK
         working-directory: ./app
         run: ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.log
