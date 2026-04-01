@@ -41,15 +41,25 @@ jobs:
       
       - name: Check Build Result
         run: |
-          echo "=== Checking for APK ==="
-          find app -name "*.apk" -type f 2>/dev/null | head -20
-          echo ""
-          echo "=== Checking build outputs ==="
-          ls -lR app/app/build/outputs/ 2>/dev/null | head -50
-          echo ""
-          echo "=== Last 50 lines of build.log ==="
-          tail -50 app/build.log
+          echo "=== Checking for APK ===" >> diagnostics.log
+          find app -name "*.apk" -type f 2>/dev/null | head -20 >> diagnostics.log
+          echo "" >> diagnostics.log
+          echo "=== Checking build outputs ===" >> diagnostics.log
+          ls -lR app/app/build/outputs/ 2>/dev/null | head -100 >> diagnostics.log
+          echo "" >> diagnostics.log
+          echo "=== Last 100 lines of build.log ===" >> diagnostics.log
+          tail -100 app/build.log >> diagnostics.log
+          cat diagnostics.log
           exit 1
+      
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-diagnostics
+          path: |
+            diagnostics.log
+            app/build.log
       
       - name: Upload APK to artifacts
         if: success()
