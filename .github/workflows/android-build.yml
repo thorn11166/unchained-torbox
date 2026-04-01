@@ -33,8 +33,11 @@ jobs:
         run: ./gradlew clean --dry-run
       
       - name: Build Debug APK
+        id: build
         working-directory: ./app
-        run: ./gradlew assembleDebug -x lint -x lintVital --no-daemon --stacktrace 2>&1 | tail -200
+        run: |
+          ./gradlew assembleDebug -x lint -x lintVital --no-daemon --stacktrace 2>&1 | tee build.log
+          echo "BUILD_STATUS=$?" >> $GITHUB_OUTPUT
       
       - name: Check Build Result
         run: |
@@ -42,10 +45,9 @@ jobs:
             echo "✅ Build succeeded"
             ls -lh app/app/build/outputs/apk/debug/
           else
-            echo "❌ Build failed - checking logs..."
-            if [ -f app/app/build/reports/lint-results.html ]; then
-              echo "Lint report available"
-            fi
+            echo "❌ Build failed"
+            echo "=== Last 100 lines of build.log ==="
+            tail -100 app/build.log
             exit 1
           fi
       
