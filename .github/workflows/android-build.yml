@@ -55,7 +55,7 @@ jobs:
       - name: Build Debug APK
         working-directory: ./app
         run: |
-          ./gradlew build \
+          ./gradlew app:assembleDebug \
             -x lint \
             -x test \
             --no-daemon \
