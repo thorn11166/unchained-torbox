@@ -6,10 +6,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.parcelize")
     // id("com.google.dagger.hilt.android") // Disabled for build fix
     id("androidx.navigation.safeargs.kotlin")
-    // alias(libs.plugins.protobuf) // Disabled for build fix
+    alias(libs.plugins.protobuf)
     alias(libs.plugins.ktfmt)
-    // alias(libs.plugins.ksp) // Disabled for build fix
-    // alias(libs.plugins.room) // Disabled for build fix
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 fun readProperties(propertiesFile: File) =
@@ -23,12 +23,7 @@ val keyProperties = readProperties(keyPropertiesFile)
 val apiPropertiesFile: File = rootProject.file("apikey.properties")
 val apiProperties = readProperties(apiPropertiesFile)
 
-protobuf {
-    protoc { artifact = libs.protobuf.core.get().toString() }
-    plugins {
-        generateProtoTasks { all().forEach { it.builtins { create("java") { option("lite") } } } }
-    }
-}
+
 
 ktfmt {
     // KotlinLang style - 4 space indentation - From kotlinlang.org/docs/coding-conventions.html
