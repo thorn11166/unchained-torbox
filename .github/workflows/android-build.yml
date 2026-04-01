@@ -36,7 +36,7 @@ jobs:
         id: build
         working-directory: ./app
         run: |
-          ./gradlew assembleDebug -x lint -x lintVital --no-daemon --stacktrace 2>&1 | tee build.log
+          ./gradlew build -x lint -x lintVital -x test --no-daemon --stacktrace 2>&1 | tee build.log
           echo "BUILD_STATUS=$?" >> $GITHUB_OUTPUT
       
       - name: Check Build Result
