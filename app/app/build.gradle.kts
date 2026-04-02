@@ -130,8 +130,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions { jvmTarget = "11" }
+    // Disable unused build features to avoid dependency issues
     buildFeatures {
-        viewBinding = true
+        viewBinding = false
+        dataBinding = false
         buildConfig = true
     }
 
