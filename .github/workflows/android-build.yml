@@ -23,33 +23,39 @@ jobs:
           cache: 'gradle'
       
       - name: Setup Android SDK
-        run: |
-          ANDROID_SDK=/usr/local/lib/android/sdk
-          echo "ANDROID_HOME=${ANDROID_SDK}" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=${ANDROID_SDK}" >> $GITHUB_ENV
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 36
+          build-tools: 36.0.0
+          ndk: '27.2.12479018'
       
       - name: Create local.properties
-        run: echo "sdk.dir=/usr/local/lib/android/sdk" > app/local.properties
+        run: |
+          SDK_PATH=$(echo "$ANDROID_SDK_ROOT")
+          echo "sdk.dir=${SDK_PATH}" > app/local.properties
+          echo "Built app/local.properties:"
+          cat app/local.properties
       
       - name: Make gradlew executable
         run: chmod +x app/gradlew
       
-      - name: Clean
-        working-directory: ./app
-        run: ./gradlew clean
-      
       - name: Build APK
         working-directory: ./app
-        run: ./gradlew app:assembleDebug --no-daemon --stacktrace
-      
-      - name: Check APK
         run: |
-          if [ -f app/app/build/outputs/apk/debug/app-debug.apk ]; then
-            echo "✅ APK found!"
-            ls -lh app/app/build/outputs/apk/debug/app-debug.apk
+          ./gradlew app:assembleDebug \
+            --no-daemon \
+            --stacktrace
+      
+      - name: Verify APK
+        run: |
+          APK_PATH="app/app/build/outputs/apk/debug/app-debug.apk"
+          if [ -f "$APK_PATH" ]; then
+            ls -lh "$APK_PATH"
+            echo "✅ Build successful!"
           else
-            echo "❌ APK not found"
-            find app -name "*.apk" -o -name "outputs" -type d
+            echo "❌ APK not found at $APK_PATH"
+            echo "Contents of app/app/build:"
+            ls -la app/app/build/outputs/apk/ 2>/dev/null || echo "outputs/apk/ does not exist"
             exit 1
           fi
       
@@ -66,6 +72,6 @@ jobs:
           files: app/app/build/outputs/apk/debug/app-debug.apk
           body: |
             Build #${{ github.run_number }}
-            Unchained TorBox - Debug APK
+            Unchained TorBox APK
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
