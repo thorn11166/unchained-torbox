@@ -22,100 +22,50 @@ jobs:
           java-version: '21'
           cache: 'gradle'
       
-      - name: Locate Android SDK
+      - name: Setup Android SDK
         run: |
           ANDROID_SDK=/usr/local/lib/android/sdk
           echo "ANDROID_HOME=${ANDROID_SDK}" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=${ANDROID_SDK}" >> $GITHUB_ENV
-          echo "Android SDK found at: ${ANDROID_SDK}"
-          ls -la ${ANDROID_SDK}/ 2>/dev/null | head -10 || echo "SDK directory not found"
       
       - name: Create local.properties
-        run: |
-          echo "sdk.dir=/usr/local/lib/android/sdk" > app/local.properties
-          cat app/local.properties
+        run: echo "sdk.dir=/usr/local/lib/android/sdk" > app/local.properties
       
       - name: Make gradlew executable
         run: chmod +x app/gradlew
       
-      - name: Debug Env Before Build
-        run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          echo "sdk.dir in local.properties:"
-          cat app/local.properties
-          echo ""
-          echo "Checking SDK exists:"
-          ls -la /usr/local/lib/android/sdk/ 2>/dev/null | head -10 || echo "SDK not found"
-      
-      - name: Clean Build
+      - name: Clean
         working-directory: ./app
-        run: ./gradlew clean --stacktrace
+        run: ./gradlew clean
       
-      - name: Build Debug APK
+      - name: Build APK
         working-directory: ./app
-        run: |
-          ./gradlew app:assembleDebug \
-            -x lint \
-            -x test \
-            --no-daemon \
-            --no-build-cache \
-            --stacktrace 2>&1 | tee build-output.log
-          BUILD_EXIT=$?
-          echo "Build exit code: $BUILD_EXIT"
-          if [ $BUILD_EXIT -ne 0 ]; then
-            echo "Build failed with exit code $BUILD_EXIT"
-            exit $BUILD_EXIT
-          fi
+        run: ./gradlew app:assembleDebug --no-daemon --stacktrace
       
-      - name: Verify APK
+      - name: Check APK
         run: |
-          echo "=== Checking for APK files ==="
-          APK_FOUND=$(find . -name "*.apk" -type f 2>/dev/null | head -1)
-          if [ -z "$APK_FOUND" ]; then
-            echo "❌ NO APK FOUND!"
-            echo ""
-            echo "=== Debug: Full directory structure ==="
-            find app -type f -name "*.apk" 2>/dev/null || echo "No APKs in app/"
-            echo ""
-            echo "=== Debug: build directory structure ==="
-            find app -type d -name "build" 2>/dev/null
-            find app -path "*/build/outputs*" -type d 2>/dev/null
-            find app -path "*/build/outputs*" -type f 2>/dev/null | head -20
-            echo ""
-            echo "=== Debug: Last 50 lines of build log ==="
-            tail -50 app/build-output.log
-            exit 1
+          if [ -f app/app/build/outputs/apk/debug/app-debug.apk ]; then
+            echo "✅ APK found!"
+            ls -lh app/app/build/outputs/apk/debug/app-debug.apk
           else
-            echo "✅ APK FOUND: $APK_FOUND"
-            ls -lh "$APK_FOUND"
+            echo "❌ APK not found"
+            find app -name "*.apk" -o -name "outputs" -type d
+            exit 1
           fi
       
-      - name: Upload APK to artifacts
-        if: always()
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: unchained-torbox-debug
+          name: unchained-torbox-apk
           path: app/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: warn
-      
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: app/build-output.log
       
       - name: Create Release
-        if: success()
         uses: softprops/action-gh-release@v2
         with:
-          files: app/app/build/outputs/apk/debug/app-debug.apk
           tag_name: build-${{ github.run_number }}
+          files: app/app/build/outputs/apk/debug/app-debug.apk
           body: |
             Build #${{ github.run_number }}
-            Commit: ${{ github.sha }}
-            
-            Debug APK ready for testing.
+            Unchained TorBox - Debug APK
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
