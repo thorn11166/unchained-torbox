@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.parcelize")
     // id("com.google.dagger.hilt.android") // Disabled for build fix
     id("androidx.navigation.safeargs.kotlin")
-    alias(libs.plugins.protobuf)
+    // alias(libs.plugins.protobuf) // Disabled: protoc not available in CI
     alias(libs.plugins.ktfmt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
